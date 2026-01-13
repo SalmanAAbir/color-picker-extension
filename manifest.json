@@ -2,14 +2,10 @@
   "manifest_version": 3,
   "name": "Color Picker",
   "version": "1.0.0",
-  "description": "Pick colors from anywhere on your screen with an easy-to-use color picker",
+  "description": "Pick colors from anywhere on your screen",
   "permissions": [
-    "activeTab",
-    "offscreen"
+    "activeTab"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -24,4 +20,3 @@
     "128": "icons/icon128.png"
   }
 }
-

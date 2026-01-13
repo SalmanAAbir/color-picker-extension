@@ -50,7 +50,6 @@ const hexValue = document.getElementById('hexValue');
 const rgbValue = document.getElementById('rgbValue');
 const hslValue = document.getElementById('hslValue');
 const historyGrid = document.getElementById('historyGrid');
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 const copyButtons = document.querySelectorAll('.copy-btn');
 const toast = document.getElementById('toast');
 
@@ -66,11 +65,8 @@ function loadHistory() {
 function saveToHistory(color) {
   chrome.storage.local.get(['colorHistory'], (result) => {
     let history = result.colorHistory || [];
-    // Remove if already exists (to move to front)
     history = history.filter(c => c !== color);
-    // Add to beginning
     history.unshift(color);
-    // Keep only last 18 colors (3 rows of 6)
     history = history.slice(0, 18);
     chrome.storage.local.set({ colorHistory: history }, () => {
       displayHistory(history);
@@ -103,7 +99,7 @@ function setColor(hexColor) {
 
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
-  // Update preview - remove no-color message if exists
+  // Update preview
   const noColorMsg = colorPreview.querySelector('.no-color');
   if (noColorMsg) {
     noColorMsg.remove();
@@ -140,22 +136,43 @@ function showToast(message) {
   }, 2000);
 }
 
-// Pick color using EyeDropper API via offscreen document
+// Pick color using EyeDropper API
 pickColorBtn.addEventListener('click', async () => {
-  // Send message to background script to start color picking
-  chrome.runtime.sendMessage({ action: 'startColorPick' }, (response) => {
-    if (chrome.runtime.lastError) {
-      console.error('Error:', chrome.runtime.lastError);
-      showToast('Failed to start color picker');
+  try {
+    // Check if EyeDropper API is available
+    if (!window.EyeDropper) {
+      showToast('EyeDropper API not supported. Please use Chrome 95+');
       return;
     }
+
+    // Update button to show picking state
+    pickColorBtn.disabled = true;
+    pickColorBtn.textContent = 'Picking...';
+
+    const eyeDropper = new EyeDropper();
+    const result = await eyeDropper.open();
     
-    // Close the popup after starting the color picker
-    // The popup will reopen automatically after color selection, or user can click icon again
-    setTimeout(() => {
-      window.close();
-    }, 100);
-  });
+    if (result && result.sRGBHex) {
+      setColor(result.sRGBHex);
+    }
+  } catch (err) {
+    // User cancelled or error occurred
+    if (err.name !== 'AbortError') {
+      console.error('Error picking color:', err);
+      showToast('Failed to pick color');
+    }
+  } finally {
+    // Reset button
+    pickColorBtn.disabled = false;
+    pickColorBtn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      Pick Color
+    `;
+  }
 });
 
 // Copy button handlers
@@ -182,35 +199,8 @@ copyButtons.forEach(btn => {
   });
 });
 
-// Clear history
-if (clearHistoryBtn) {
-  clearHistoryBtn.addEventListener('click', () => {
-    chrome.storage.local.set({ colorHistory: [] }, () => {
-      if (chrome.runtime.lastError) {
-        console.error('Error clearing history:', chrome.runtime.lastError);
-        showToast('Failed to clear history');
-      } else {
-        displayHistory([]);
-        showToast('History cleared');
-      }
-    });
-  });
-}
 
-// Check for selected color when popup opens
-function checkForSelectedColor() {
-  chrome.storage.local.get(['lastSelectedColor', 'errorMessage'], (result) => {
-    if (result.errorMessage) {
-      showToast(result.errorMessage);
-      chrome.storage.local.remove(['errorMessage']);
-    } else if (result.lastSelectedColor) {
-      setColor(result.lastSelectedColor);
-      chrome.storage.local.remove(['lastSelectedColor']);
-    }
-  });
-}
+// Initialize - no need to check for stored colors on open
 
 // Initialize
 loadHistory();
-checkForSelectedColor();
-
