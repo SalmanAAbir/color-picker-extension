@@ -122,8 +122,7 @@ function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     showToast('Copied to clipboard!');
   }).catch(err => {
-    console.error('Failed to copy:', err);
-    showToast('Failed to copy');
+
   });
 }
 
@@ -159,7 +158,6 @@ pickColorBtn.addEventListener('click', async () => {
     // User cancelled or error occurred
     if (err.name !== 'AbortError') {
       console.error('Error picking color:', err);
-      showToast('Failed to pick color');
     }
   } finally {
     // Reset button
