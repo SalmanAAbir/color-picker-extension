@@ -135,42 +135,18 @@ function showToast(message) {
   }, 2000);
 }
 
-// Pick color using EyeDropper API
-pickColorBtn.addEventListener('click', async () => {
-  try {
-    // Check if EyeDropper API is available
-    if (!window.EyeDropper) {
-      showToast('EyeDropper API not supported. Please use Chrome 95+');
+// Pick color using EyeDropper API via offscreen document
+pickColorBtn.addEventListener('click', () => {
+  // Send message to background to start color picking
+  chrome.runtime.sendMessage({ action: 'startColorPick' }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error:', chrome.runtime.lastError);
       return;
     }
-
-    // Update button to show picking state
-    pickColorBtn.disabled = true;
-    pickColorBtn.textContent = 'Picking...';
-
-    const eyeDropper = new EyeDropper();
-    const result = await eyeDropper.open();
     
-    if (result && result.sRGBHex) {
-      setColor(result.sRGBHex);
-    }
-  } catch (err) {
-    // User cancelled or error occurred
-    if (err.name !== 'AbortError') {
-      console.error('Error picking color:', err);
-    }
-  } finally {
-    // Reset button
-    pickColorBtn.disabled = false;
-    pickColorBtn.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-      </svg>
-      Pick Color
-    `;
-  }
+    // Close popup immediately so user can see the screen clearly
+    window.close();
+  });
 });
 
 // Copy button handlers
@@ -198,7 +174,15 @@ copyButtons.forEach(btn => {
 });
 
 
-// Initialize - no need to check for stored colors on open
+// Check for selected color when popup opens
+chrome.storage.local.get(['lastSelectedColor'], (result) => {
+  if (result.lastSelectedColor) {
+    setColor(result.lastSelectedColor);
+    chrome.storage.local.remove(['lastSelectedColor']);
+  }
+});
+
+// Initialize
 
 // Initialize
 loadHistory();
