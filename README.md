@@ -65,3 +65,4 @@ This extension only requires the `activeTab` permission, which allows it to use 
 
 MIT License - feel free to use and modify as needed!
 
+# color-picker-extension
