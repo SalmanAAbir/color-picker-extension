@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Picker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Color Picker</h1>
+    </header>
+    
+    <div class="color-display">
+      <div class="color-preview" id="colorPreview">
+        <div class="no-color">No color selected</div>
+      </div>
+      <div class="color-info">
+        <div class="color-value" id="colorValue">--</div>
+        <div class="color-formats">
+          <div class="format-item">
+            <span class="format-label">HEX</span>
+            <span class="format-value" id="hexValue">--</span>
+            <button class="copy-btn" data-format="hex" title="Copy HEX">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="format-item">
+            <span class="format-label">RGB</span>
+            <span class="format-value" id="rgbValue">--</span>
+            <button class="copy-btn" data-format="rgb" title="Copy RGB">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="format-item">
+            <span class="format-label">HSL</span>
+            <span class="format-value" id="hslValue">--</span>
+            <button class="copy-btn" data-format="hsl" title="Copy HSL">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="pick-btn" id="pickColorBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      Pick Color
+    </button>
+
+    <div class="history-section">
+      <div class="history-header">
+        <h2>Color History</h2>
+        <button class="clear-btn" id="clearHistoryBtn">Clear</button>
+      </div>
+      <div class="history-grid" id="historyGrid">
+        <!-- Color history items will be added here -->
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
+
