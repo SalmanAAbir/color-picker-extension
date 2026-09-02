@@ -1,68 +1,73 @@
 # Color Picker Chrome Extension
 
-A beautiful and modern Chrome extension for picking colors from anywhere on your screen.
+A lightweight Chrome extension for picking colors from anywhere on your screen. Selected colors are shown as **HEX**, **RGB**, and **HSL**, with one-click copy to the clipboard.
+
+![Color Picker popup](docs/screenshot.png)
+
+## Overview
+
+Click the toolbar icon, tap **Pick Color**, and use the system eyedropper to sample any pixel. The popup preview updates immediately, and you can copy whichever format you need for CSS, design tools, or documentation.
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Platform | Chrome Extension (Manifest V3) |
+| Language | Vanilla HTML, CSS, and JavaScript |
+| Color sampling | [EyeDropper API](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper) |
+| Persistence | `chrome.storage.local` |
+| Background | Service worker + offscreen document |
 
 ## Features
 
-- 🎨 **EyeDropper Tool**: Pick colors directly from any webpage or screen element
-- 📋 **Multiple Formats**: View colors in HEX, RGB, and HSL formats
-- 📝 **Copy to Clipboard**: One-click copy for any color format
-- 📚 **Color History**: Keep track of recently picked colors (up to 18 colors)
-- 🎯 **Modern UI**: Beautiful gradient design with smooth animations
+- **Eyedropper** — pick a color from any visible pixel on the screen
+- **Multiple formats** — HEX, RGB, and HSL shown together
+- **Copy to clipboard** — one click per format
+- **Last color restore** — the most recently picked color is stored and shown when you reopen the popup
+- **Modern popup UI** — gradient chrome, preview swatch, and toast confirmation
 
-## Installation
+## Dependencies
 
-### From Source
+This project has **no npm packages**. It uses only browser and Chrome extension APIs:
 
-1. Clone or download this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in the top right)
-4. Click "Load unpacked"
-5. Select the `color-picker-extension` folder
-6. The extension icon should now appear in your Chrome toolbar
+- Chrome Extension APIs: `chrome.runtime`, `chrome.offscreen`, `chrome.storage`
+- Web APIs: `EyeDropper`, `navigator.clipboard`
 
-## Usage
+**Permissions** (see `manifest.json`): `activeTab`, `offscreen`, `storage`.
 
-1. Click the Color Picker extension icon in your Chrome toolbar
-2. Click the "Pick Color" button
-3. Move your cursor over any color on the screen
-4. Click to select the color
-5. The color will be displayed with all format options
-6. Click the copy icon next to any format to copy it to your clipboard
-7. Previously picked colors are saved in the history section
+## Run locally
 
-## Browser Compatibility
+Chrome 95+ (or another Chromium browser with the EyeDropper API) is required.
 
-- Requires Chrome 95+ (EyeDropper API support)
-- Works on Chromium-based browsers (Edge, Brave, etc.)
+1. Clone this repository:
 
-## Files Structure
+   ```bash
+   git clone https://github.com/SalmanAAbir/color-picker-extension.git
+   cd color-picker-extension
+   ```
 
-```
-color-picker-extension/
-├── manifest.json       # Extension configuration
-├── popup.html         # Extension popup UI
-├── popup.css          # Styling
-├── popup.js           # Main functionality
-├── icons/             # Extension icons (you'll need to add these)
-└── README.md          # This file
-```
+2. Open Chrome and go to `chrome://extensions/`
+3. Turn on **Developer mode**
+4. Click **Load unpacked**
+5. Select this project folder
+6. Pin the **Color Picker** icon from the toolbar, then click it to open the popup
 
-## Adding Icons
+### Usage
 
-To complete the extension setup, you'll need to add icon files:
-- `icons/icon16.png` (16x16 pixels)
-- `icons/icon48.png` (48x48 pixels)
-- `icons/icon128.png` (128x128 pixels)
+1. Click **Pick Color** (the popup closes so you can see the page)
+2. Move the eyedropper over the color you want and click
+3. Reopen the extension to see HEX / RGB / HSL
+4. Click a copy icon next to any format
 
-You can create these icons or use any image editing tool to generate them. The icons should represent a color picker or eyedropper tool.
+## Links
 
-## Permissions
+| | |
+| --- | --- |
+| Repository | https://github.com/SalmanAAbir/color-picker-extension |
+| Live / store listing | Not published on the Chrome Web Store yet — load from source as above |
+| EyeDropper API docs | https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper |
+| Manifest V3 docs | https://developer.chrome.com/docs/extensions/mv3/intro/ |
 
-This extension only requires the `activeTab` permission, which allows it to use the EyeDropper API when you interact with the extension.
+## Browser compatibility
 
-## License
-
-MIT License - feel free to use and modify as needed!
-
-# color-picker-extension
+Works in Chrome 95+ and other Chromium browsers (Edge, Brave, etc.) that implement the EyeDropper API.
